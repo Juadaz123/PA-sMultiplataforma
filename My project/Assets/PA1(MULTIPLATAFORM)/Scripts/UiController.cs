@@ -12,7 +12,6 @@ public class UiController : MonoBehaviour
     
     [Header("Return Button reference")]
     [SerializeField] private Button retturnButton;
-    private int _lastSelectedIndex = -1;
     [SerializeField] private Vector2 targetPos;
     
     void Start()
