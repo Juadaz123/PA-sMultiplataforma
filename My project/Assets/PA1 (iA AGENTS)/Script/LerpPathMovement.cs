@@ -113,12 +113,9 @@ private void Lerp4()
         // Movemos el objeto usando Lerp.
         transform.position = Vector3.Lerp(waypoint[_currentSegment], waypoint[_currentSegment + 1], _progress);
 
-        // Si el progreso llega a 1 (o más), significa que hemos llegado al destino.
         if (_progress >= 1f)
         {
-            // Nos aseguramos de que el objeto esté exactamente en la posición final del waypoint.
             transform.position = waypoint[_currentSegment + 1];
-            // Activamos el modo de espera. En el próximo fotograma, entrará en el bloque "if (isWaiting)".
             isWaiting = true;
         }
     }
@@ -178,19 +175,18 @@ private void Lerp4()
     {
         for (int i = 0; i < waypoint.Count - 1; i++)
         {
-            yield return StartCoroutine(MoveToWaypoint(waypoint[i], waypoint[i + 1], waitDuration));
+            yield return StartCoroutine(MoveToWaypoint(waypoint[i], waypoint[i + 1]));
         }
         
         for (int i = waypoint.Count - 1; i > 0; i--)
         {
-            yield return StartCoroutine(MoveToWaypoint(waypoint[i], waypoint[i - 1], waitDuration));
+            yield return StartCoroutine(MoveToWaypoint(waypoint[i], waypoint[i - 1]));
         }
         FInalMessage(); 
         StopAllCoroutines();
     }
 
-    //mover objetos y esperar...
-    private IEnumerator MoveToWaypoint(Vector3 startPoint, Vector3 endPoint,  float duration)
+    private IEnumerator MoveToWaypoint(Vector3 startPoint, Vector3 endPoint)
     {
         float journeyLength = Vector3.Distance(startPoint, endPoint);
         float startTime = Time.deltaTime;
@@ -201,10 +197,9 @@ private void Lerp4()
             float distanceCovered = (Time.time - startTime) * speed;
             progress = distanceCovered / journeyLength;
             transform.position = Vector3.Lerp(startPoint, endPoint, progress);
-            yield return new WaitForSeconds(duration);
+            yield return null;
         }
     
-        // Asegura que la posición sea exactamente la del final para evitar errores
         transform.position = endPoint; 
     }
 
