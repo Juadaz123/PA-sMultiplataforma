@@ -37,7 +37,8 @@ public class VirtualJoystick : MonoBehaviour
 
     private void Update()
     {
-        Vector3 move = new Vector3(-joystick.Horizontal, 0 , -joystick.Vertical).normalized;
+        
+        Vector3 move = new Vector3(joystick.Horizontal, 0 , joystick.Vertical).normalized;
 
          _controller.Move(move * (Time.deltaTime * 5f));
 

@@ -1,69 +1,123 @@
-using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-//Reqeriments
 [RequireComponent(typeof(CharacterController), typeof(PlayerInput))]
-
 public class PlayerController : MonoBehaviour
 {
-    [Header(" Player Parameters")]
+    [Header("Player Parameters")]
     [SerializeField] private float speed = 5f;
-    [SerializeField] private float jumpForce = 5f, gravity = -9.8f;
-    
+    [SerializeField] private float jumpHeight = 2f;
+    [SerializeField] private float jumpDuration = 0.5f; // duración total del salto
+    [SerializeField] private float gravity = -9.81f;
+
     [Header("Camera Parameters")]
     [SerializeField] private Transform playerCamera;
 
-    [SerializeField] private bool shouldFaceMovePlayer = false;
-    
     private CharacterController _characterController;
     private Vector3 _moveDirection;
     private Vector3 _velocity;
+    private bool _isJumping;
+    private bool _isGrounded;
+    private float _groundCheckDistance = 0.2f;
 
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
     }
 
-    public void onMove(InputAction.CallbackContext context)
+    public void OnMove(InputAction.CallbackContext context)
     {
-        _moveDirection = context.ReadValue<Vector2>().normalized;
-        //Debug.Log("Move direction: "  + _moveDirection);
+        Vector2 input = context.ReadValue<Vector2>();
+        _moveDirection = new Vector3(input.x, 0f, input.y);
     }
 
-    public void onJump(InputAction.CallbackContext context)
+    public void OnJump(InputAction.CallbackContext context)
     {
-        //Debug.Log($"Move Input: {context.performed} - isGround: {_characterController.isGrounded}");
-        if (context.performed && _characterController.isGrounded)
+        if (context.performed && _isGrounded && !_isJumping)
         {
-            //Debug.Log("Jump");
-            _velocity.y = (float)Math.Sqrt(jumpForce * -2f * gravity);
+            StartCoroutine(JumpRoutine());
         }
     }
+
     private void Update()
     {
-        //Movement Logic
-        Vector3 foward = playerCamera.forward;
-        Vector3 right = playerCamera.right;
-        
-        foward.y = 0f;
-        right.y = 0f;
-        foward.Normalize();
-        right.Normalize();
-        
-        Vector3 movedirection = foward * _moveDirection.y + right * _moveDirection.x;
-        _characterController.Move(movedirection * (speed * Time.deltaTime));
+        CheckGrounded();
+        HandleMovement();
+        ApplyGravity();
+    }
 
-        if (shouldFaceMovePlayer && movedirection.sqrMagnitude > 0.001f)
+    private void CheckGrounded()
+    {
+        // Usamos Raycast para una detección de suelo más precisa
+        Vector3 origin = transform.position + Vector3.down * (_characterController.height / 2f - _characterController.skinWidth);
+        _isGrounded = Physics.Raycast(origin, Vector3.down, _groundCheckDistance);
+
+        if (_isGrounded && !_isJumping && _velocity.y < 0)
         {
-            Quaternion toRotation = Quaternion.LookRotation(movedirection, Vector3.up);
+            _velocity.y = -2f; // mantiene al jugador pegado al suelo
+        }
+    }
+
+    private void HandleMovement()
+    {
+        Vector3 forward = playerCamera.forward;
+        Vector3 right = playerCamera.right;
+        forward.y = 0f;
+        right.y = 0f;
+
+        Vector3 move = (forward * _moveDirection.z + right * _moveDirection.x).normalized;
+        _characterController.Move(move * (speed * Time.deltaTime));
+
+        // Rotación del jugador hacia la dirección de movimiento
+        if (move.sqrMagnitude > 0.001f)
+        {
+            Quaternion toRotation = Quaternion.LookRotation(move, Vector3.up);
             transform.rotation = Quaternion.Slerp(transform.rotation, toRotation, 10f * Time.deltaTime);
         }
-    
-        _velocity.y += gravity * Time.deltaTime;
-        _characterController.Move(_velocity * Time.deltaTime);
-        
-        
-        
+    }
+
+    private void ApplyGravity()
+    {
+        if (!_isGrounded && !_isJumping)
+        {
+            _velocity.y += gravity * Time.deltaTime;
+            _characterController.Move(_velocity * Time.deltaTime);
+        }
+    }
+
+    private IEnumerator JumpRoutine()
+    {
+        _isJumping = true;
+        float elapsed = 0f;
+        Vector3 initialPosition = transform.position;
+
+        while (elapsed < jumpDuration)
+        {
+            float normalizedTime = elapsed / jumpDuration;
+            float height = Mathf.Sin(normalizedTime * Mathf.PI) * jumpHeight;
+
+            float currentY = initialPosition.y + height;
+            float deltaY = currentY - transform.position.y;
+
+            // Movemos el CharacterController de forma controlada (segura)
+            _characterController.Move(Vector3.up * deltaY);
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        _isJumping = false;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (!_characterController) return;
+
+        // Gizmo para depurar si está tocando el suelo
+        Gizmos.color = _isGrounded ? Color.green : Color.red;
+        Vector3 origin = transform.position + Vector3.down * (_characterController.height / 2f - _characterController.skinWidth);
+        Gizmos.DrawWireSphere(origin, _characterController.radius);
+        Gizmos.DrawLine(origin, origin + Vector3.down * _groundCheckDistance);
     }
 }
