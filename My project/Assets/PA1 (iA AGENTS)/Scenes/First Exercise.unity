@@ -129,11 +129,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 3264760454364e1429b552472ac60b68, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -12.67
+      value: -16.671207
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3264760454364e1429b552472ac60b68, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -11.41
+      value: -10.959442
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3264760454364e1429b552472ac60b68, type: 3}
       propertyPath: m_LocalPosition.z
@@ -141,19 +141,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3264760454364e1429b552472ac60b68, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071069
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3264760454364e1429b552472ac60b68, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.0000040615528
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3264760454364e1429b552472ac60b68, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.0000040615514
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3264760454364e1429b552472ac60b68, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.70710665
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3264760454364e1429b552472ac60b68, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -165,7 +165,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3264760454364e1429b552472ac60b68, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 3264760454364e1429b552472ac60b68, type: 3}
       propertyPath: m_Name
@@ -427,10 +427,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypoint:
   - {x: -13, y: -12, z: 3}
-  - {x: 0, y: 0, z: 0}
-  - {x: 14.01, y: 0, z: 0}
-  speed: 5
-  waitedTime: 1
+  - {x: 0, y: -11.82, z: 0}
+  - {x: 11.5, y: -8.81, z: -2.19}
+  speed: 10
+  waitedTime: 3
+  patternNumber: 4
 --- !u!1 &1082095986
 GameObject:
   m_ObjectHideFlags: 0
