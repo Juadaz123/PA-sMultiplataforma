@@ -40,6 +40,21 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void OnFire(InputAction.CallbackContext context)
+    {        if (context.performed)
+        {
+            // Llama a SpawnBullet desde el Singleton del pooler
+            if (GameManagerBasket.Instance != null)
+            {
+                GameManagerBasket.Instance.SpawnBullet();
+            }
+            else
+            {
+                Debug.LogError("GameManagerBasket Instance is missing.");
+            }
+        }
+    }
+
     private void Update()
     {
         CheckGrounded();
