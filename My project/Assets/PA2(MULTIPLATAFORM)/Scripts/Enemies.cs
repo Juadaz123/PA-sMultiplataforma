@@ -4,52 +4,57 @@ using System.Collections;
 
 public class Enemies : MonoBehaviour
 {
-    public IObjectPool<Enemies> objectPool;
-    public IObjectPool<Enemies> ObjectPool { set => objectPool = value; }
+    public IObjectPool<Enemies> ObjectPool { get; set; }
 
-    [SerializeField] private float moveSpeed = 5f;
+    [Header("Movement Parameters")]
+    [SerializeField]
+    private float duration = 2.0f; 
+
+    [SerializeField] private Transform _target;
     
-    private Transform _playerTransform; 
+    private Coroutine _movementCoroutine; 
 
-    public void SetTarget(Transform target)
+    public void SetTarget(Transform newTarget)
     {
-        _playerTransform = target;
+        _target = newTarget;
     }
 
     private void OnEnable()
     {
-        if (_playerTransform != null)
-        {
-            StartCoroutine(MoveToPlayerCoroutine());
-        }
+        StartCoroutine(MovementObject(_target.position));
     }
 
     private void OnDisable()
     {
-        StopAllCoroutines();
-
-        if (objectPool != null)
+        if (_movementCoroutine != null)
         {
-            objectPool.Release(this);
+            StopCoroutine(_movementCoroutine);
+            _movementCoroutine = null;
         }
     }
 
-    private IEnumerator MoveToPlayerCoroutine()
+    private IEnumerator MovementObject(Vector3 targetPosition)
     {
-        while (true)
+        Vector3 startPosition = transform.position;
+        float t = 0f;
+
+        while (t < duration)
         {
-            if (_playerTransform)
-            {
-                gameObject.SetActive(false); 
-                yield break;
-            }
-
-            Vector3 direction = _playerTransform.position - transform.position;
-            direction.Normalize();
-
-            transform.position += direction * (moveSpeed * Time.deltaTime);
+            float p = t / duration;
             
-            yield return null; 
+            p = Mathf.SmoothStep(0f, 1f, p);
+            
+            transform.position = Vector3.Lerp(startPosition, targetPosition, t);
+            
+            t += Time.deltaTime;
+            yield return null;
+        }
+        
+        transform.position = targetPosition; 
+
+        if (ObjectPool != null)
+        {
+            ObjectPool.Release(this);
         }
     }
 }

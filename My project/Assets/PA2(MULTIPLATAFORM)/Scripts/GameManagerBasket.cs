@@ -14,8 +14,8 @@ using UnityEngine.Pool;
         private bool _collectionCheck = true;
         
         private IObjectPool<Bullet> _bulletPool;
+        [SerializeField] private AimCamera aimCamera;
         
-        private Camera _mainCamera;
         
         //Singelton
         private void Awake()
@@ -39,7 +39,6 @@ using UnityEngine.Pool;
                 maxPoolSize
             );
             
-            _mainCamera = Camera.main;
         }
 
         private Bullet CreateBullet()
@@ -66,24 +65,15 @@ using UnityEngine.Pool;
 
         public void SpawnBullet()
         {
-            if (bulletSpawn == null || _mainCamera == null)
+            if (bulletSpawn == null)
             {
                 Debug.LogError("Player Transform or Main Camera is not set.");
                 return;
             }
+        
+            Vector3 direction = (aimCamera.GetMouseWorldPosition() - bulletSpawn.position).normalized;
             
-            //calculate direction to mouse
-            Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                Vector3 targetPoint = hit.point;
-                
-                Vector3 direction = (targetPoint - _mainCamera.transform.position).normalized;
-                
-                Bullet bulletInstance = _bulletPool.Get();
-                bulletInstance.SetMovementTarget(bulletSpawn.position, direction);
-
-            }
+            Bullet bulletInstance = _bulletPool.Get();
+            bulletInstance.SetMovementTarget(bulletSpawn.position, direction);
         }
     }

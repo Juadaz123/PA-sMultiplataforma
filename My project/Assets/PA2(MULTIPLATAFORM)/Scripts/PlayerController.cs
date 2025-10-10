@@ -20,10 +20,13 @@ public class PlayerController : MonoBehaviour
     private bool _isJumping;
     private bool _isGrounded;
     private float _groundCheckDistance = 0.2f;
+    
+    private AimCamera _aimCamera;
 
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
+        _aimCamera = GetComponentInChildren<AimCamera>();
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -53,6 +56,13 @@ public class PlayerController : MonoBehaviour
                 Debug.LogError("GameManagerBasket Instance is missing.");
             }
         }
+    }
+
+    public void OnAim(InputAction.CallbackContext context)
+    {
+        bool aim = context.ReadValueAsButton();
+        print(aim);
+        _aimCamera.AimChangeMode(aim);
     }
 
     private void Update()

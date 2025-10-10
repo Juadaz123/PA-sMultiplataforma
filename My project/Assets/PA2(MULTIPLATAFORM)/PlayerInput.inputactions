@@ -35,7 +35,7 @@
                 },
                 {
                     "name": "AimMode",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "ef538beb-a5f9-4e8d-a54b-9a7372683384",
                     "expectedControlType": "",
                     "processors": "",
@@ -124,7 +124,7 @@
                 {
                     "name": "",
                     "id": "8a95ebea-4dcd-408f-93de-fa146d2ad5cb",
-                    "path": "<Keyboard>/v",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
