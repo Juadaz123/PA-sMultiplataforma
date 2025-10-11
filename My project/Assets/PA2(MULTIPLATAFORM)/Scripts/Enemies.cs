@@ -8,20 +8,28 @@ public class Enemies : MonoBehaviour
 
     [Header("Movement Parameters")]
     [SerializeField]
-    private float duration = 2.0f; 
+    private float speed = 2.0f; 
 
-    [SerializeField] private Transform _target;
-    
-    private Coroutine _movementCoroutine; 
+    [Header("Spawn Settings")]
+    [SerializeField]
+    private float initialDelay = 3.0f; 
 
-    public void SetTarget(Transform newTarget)
-    {
-        _target = newTarget;
-    }
+    private Transform _target;
+    private Coroutine _movementCoroutine;
 
     private void OnEnable()
     {
-        StartCoroutine(MovementObject(_target.position));
+        GameObject playerGO = GameObject.FindGameObjectWithTag("Player");
+        
+        if (playerGO != null)
+        {
+            _target = playerGO.transform;
+            _movementCoroutine = StartCoroutine(MovementToTarget(_target));
+        }
+        else
+        {
+            Debug.LogError("Player con la etiqueta 'Player' no encontrado. El enemigo no se moverá.");
+        }
     }
 
     private void OnDisable()
@@ -29,32 +37,38 @@ public class Enemies : MonoBehaviour
         if (_movementCoroutine != null)
         {
             StopCoroutine(_movementCoroutine);
-            _movementCoroutine = null;
         }
-    }
-
-    private IEnumerator MovementObject(Vector3 targetPosition)
-    {
-        Vector3 startPosition = transform.position;
-        float t = 0f;
-
-        while (t < duration)
-        {
-            float p = t / duration;
-            
-            p = Mathf.SmoothStep(0f, 1f, p);
-            
-            transform.position = Vector3.Lerp(startPosition, targetPosition, t);
-            
-            t += Time.deltaTime;
-            yield return null;
-        }
+        _target = null;
         
-        transform.position = targetPosition; 
-
         if (ObjectPool != null)
         {
             ObjectPool.Release(this);
+        }
+    }
+
+    private IEnumerator MovementToTarget(Transform targetTransform)
+    {
+        if (initialDelay > 0)
+        {
+            yield return new WaitForSeconds(initialDelay);
+        }
+        
+        while (targetTransform && gameObject.activeInHierarchy)
+        {
+            transform.position = Vector3.MoveTowards(
+                transform.position, 
+                targetTransform.position, 
+                speed * Time.deltaTime
+            );
+            yield return null;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.GetComponent<PlayerController>() != null || other.GetComponent<Bullet>() != null)
+        {
+            gameObject.SetActive(false);
         }
     }
 }

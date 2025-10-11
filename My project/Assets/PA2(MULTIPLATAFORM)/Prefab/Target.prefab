@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 2072824059189500714}
   m_Layer: 0
   m_Name: Target
-  m_TagString: Untagged
+  m_TagString: Target
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -152,3 +152,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c2908aff9614b5f9fce0a2b457be00c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemies
+  speed: 8
+  initialDelay: 5

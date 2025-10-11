@@ -1,5 +1,6 @@
 using UnityEngine;
 using Unity.Cinemachine;
+using UnityEngine.InputSystem;
 
 public class AimCamera : MonoBehaviour
 {
@@ -29,8 +30,8 @@ public class AimCamera : MonoBehaviour
     {
         _mouseWorldPosition = Vector3.zero;
 
-        Vector2 screenCenterPoint = new Vector2(Screen.width / 2f, Screen.height / 2f);
-        Ray ray = Camera.main.ScreenPointToRay(screenCenterPoint);
+        //Vector2 screenCenterPoint = new Vector2(Screen.width / 2f, Screen.height / 2f);
+        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(ray, out RaycastHit hit, 999f, aimColliderMask))
         {
             _mouseWorldPosition = hit.point;

@@ -1,6 +1,8 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Pool;
 using System.Collections.Generic;
+using Random = UnityEngine.Random;
 
 public class GameManagerEnemies : MonoBehaviour
 {
@@ -9,10 +11,10 @@ public class GameManagerEnemies : MonoBehaviour
     [Header("Pooling Parameters")]
     [SerializeField] private Enemies enemies;
     [SerializeField] private int defaultPoolSize = 5, maxPoolSize = 20;
+    [SerializeField] private float spawnInterval = 4f;
     
     [Header("Spawn and Target")]
     [SerializeField] private List<Transform> spawnPositions;
-    [SerializeField] private Transform playerTransform;
     
     private bool _collectionCheck = true;
     
@@ -40,6 +42,26 @@ public class GameManagerEnemies : MonoBehaviour
         );
     }
 
+    private void Start()
+    {
+        StartCoroutine(SpawningTargets());
+    }
+
+    private IEnumerator SpawningTargets()
+    {
+        WaitForSeconds wait = new WaitForSeconds(spawnInterval);
+        
+        while (true)
+        {
+            
+            _enemiesPool.Get();
+            
+            yield return wait;
+        }
+    }
+
+
+
     private Enemies CreateEnemies()
     {
         Enemies enemiesInstance = Instantiate(enemies);
@@ -63,11 +85,7 @@ public class GameManagerEnemies : MonoBehaviour
         obj.gameObject.SetActive(true);
         
         obj.transform.position = GetRandomSpawnPosition(); 
-
-        if (playerTransform != null)
-        {
-            obj.SetTarget(playerTransform); 
-        }
+        
     }
 
     private void onRelasePool(Enemies obj)
@@ -79,4 +97,6 @@ public class GameManagerEnemies : MonoBehaviour
     {
         Destroy(obj.gameObject);
     }
+    
+    
 }
