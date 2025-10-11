@@ -16,9 +16,12 @@ public class Enemies : MonoBehaviour
 
     private Transform _target;
     private Coroutine _movementCoroutine;
+    private ScoreManager _scoreManager;
 
     private void OnEnable()
     {
+        _scoreManager = GameObject.FindGameObjectWithTag("Score").GetComponent<ScoreManager>();
+        
         GameObject playerGO = GameObject.FindGameObjectWithTag("Player");
         
         if (playerGO != null)
@@ -66,9 +69,16 @@ public class Enemies : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponent<PlayerController>() != null || other.GetComponent<Bullet>() != null)
+        if (other.GetComponent<PlayerController>() != null )
         {
             gameObject.SetActive(false);
         }
+
+        if (other.GetComponent<Bullet>() != null)
+        {
+            gameObject.SetActive(false);
+            _scoreManager.AddScore(10);
+        }
+        
     }
 }
