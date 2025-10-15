@@ -21,7 +21,7 @@ namespace IA.Stearing_Behaviours
         }
         public static Vector3 Arrive(IAgent agent, IAgent target, float arriveRadius)
         {
-            Vector3 desired = (agent.Position - target.Position).normalized * agent.MaxSpeed;
+            Vector3 desired = (target.Position - agent.Position).normalized * agent.MaxSpeed;
             if (Vector3.Distance(agent.Position, target.Position) < arriveRadius)
             {
                 desired *= Vector3.Distance(agent.Position, target.Position) / arriveRadius;

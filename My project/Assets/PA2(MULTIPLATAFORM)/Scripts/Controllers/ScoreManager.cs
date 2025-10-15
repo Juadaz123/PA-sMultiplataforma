@@ -19,6 +19,11 @@ public class ScoreManager : MonoBehaviour
         scoreText.text = _actualScore.ToString();
     }
 
+    public int GetScore()
+    {
+        return _actualScore;
+    }
+
     private void SubmitScore()
     {
         UpdateScore();
@@ -32,6 +37,16 @@ public class ScoreManager : MonoBehaviour
         }
         
         _actualScore += score;
+        UpdateScore();
+    }
+    public void SubtractScore(int score)
+    {
+        if(score < 0)
+        { 
+            score = 0;
+        }
+        
+        _actualScore -= score;
         UpdateScore();
     }
 }

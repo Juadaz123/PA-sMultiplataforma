@@ -14,17 +14,19 @@ namespace IA.Stearing_Behaviours
 
         [Header("Agent")] 
         [SerializeField] private TargetAgent target;
+        [SerializeField] private TargetAgent arriveTarget;
 
         [SerializeField] private float maxForce = 10f, maxSpeed = 5f;
         
         [SerializeField] private List<TargetAgent> walls;
 
         private Vector3 _blockY;
-        
-        
+        private bool _playerBool;
+
 
         private void Start()
         {
+            _playerBool = true;
             target = GameObject.Find("Player").GetComponent<TargetAgent>(); 
             Position = transform.position;
             MaxForce = maxForce;
@@ -36,7 +38,11 @@ namespace IA.Stearing_Behaviours
 
         private void Update()
         {
-            Flee_Player(target, 3f);
+            if (_playerBool)
+            {
+                
+                Flee_Player(target, 3f);
+            }
 
             //List Targets
             Flee_Target(walls[0], 1f);
@@ -47,7 +53,11 @@ namespace IA.Stearing_Behaviours
             Vector3 blockY = transform.position;
             blockY.y = -3.8f;
             transform.position = blockY;;
-        }
+            
+            ArriveAgent(arriveTarget, 8f);
+
+      
+        }   
 
         // ReSharper disable Unity.PerformanceAnalysis
         private void Flee_Player(TargetAgent targetPlayer, float distance)
@@ -77,6 +87,17 @@ namespace IA.Stearing_Behaviours
                 Debug.Log($"Cerca {targetWalls.name}");
             }
         }
+
+        private void ArriveAgent(TargetAgent aTarget, float distance)
+        {
+            if (Vector3.Distance(transform.position, arriveTarget.transform.position) < distance)
+            {
+                Position = transform.position;
+                Velocity += StearingBehaviors.Arrive(this, aTarget, distance);
+                transform.position += Velocity * Time.deltaTime;
+                //Debug.Log("Arrive");
+            }
+        }
         
 
         private void Walls_Checker()
@@ -89,6 +110,16 @@ namespace IA.Stearing_Behaviours
                     Debug.Log(targetwall.name);
                 }
             }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.tag == "Redill")
+            {
+                
+               _playerBool = false;
+            }
+            
         }
     }
 }
