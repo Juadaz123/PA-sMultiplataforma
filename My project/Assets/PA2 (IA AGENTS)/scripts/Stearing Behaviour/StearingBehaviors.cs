@@ -56,7 +56,6 @@ namespace IA.Stearing_Behaviours
             
         }
 
-        // ReSharper disable Unity.PerformanceAnalysis
         public static Vector3 Separation(IAgent boid, IAgent[] neighbours, float separationRadius)
         {
             //acumulador del vector deseado

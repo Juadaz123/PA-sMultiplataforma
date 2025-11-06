@@ -19,6 +19,11 @@ public class FlockManager : MonoBehaviour
     public float maxForce = 10;
     public float cohesionRadius = 1f, separationRadius = 1f, alignmentRadius = 1f;
     
+    [Header("Sphere Containment")]
+    public bool enableSphereContainment = true;
+    public float sphereRadius = 15f;
+    public float containmentWeight = 2f;
+    
     [Header("Space Wrapping")]
     public bool enableWrapping = true;
 
@@ -62,10 +67,11 @@ public class FlockManager : MonoBehaviour
     {
         Gizmos.color = Color.green;
         Gizmos.DrawWireCube(transform.position, spawnArea);
-        if (enableWrapping)
+        
+        if (enableSphereContainment)
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(Vector3.zero, wrapBounds);
+            Gizmos.DrawWireSphere(transform.position, sphereRadius);
         }
     }
 }

@@ -149,14 +149,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlockManager
   boidPrefab: {fileID: 569840961332586126, guid: 34a140752371b354692c974049f6f03e, type: 3}
-  flockSize: 10
+  flockSize: 34
   spawnArea: {x: 10, y: 10, z: 10}
-  cohesionWeight: 1
-  separationWeight: 1
-  alignmentWeight: 1
+  cohesionWeight: 2
+  separationWeight: 0.5
+  alignmentWeight: 1.5
   maxSpeed: 5
-  maxForce: 10
-  neighbpursRadius: 5
+  maxForce: 2
+  cohesionRadius: 5
+  separationRadius: 1
+  alignmentRadius: 5
+  enableSphereContainment: 1
+  sphereRadius: 15
+  containmentWeight: 2
   enableWrapping: 1
   wrapBounds: {x: 15, y: 15, z: 15}
 --- !u!4 &162336875
@@ -167,8 +172,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 162336873}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.63286, y: 4.3856, z: 7.87}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -317,7 +322,7 @@ GameObject:
   - component: {fileID: 810381586}
   m_Layer: 0
   m_Name: SEEK
-  m_TagString: Untagged
+  m_TagString: Targeted
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -349,7 +354,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -440,8 +445,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::IA.Stearing_Behaviours.AgentSeek
   target: {fileID: 1491568738}
   seekTarrget: {fileID: 810381586}
-  maxForce: 10
-  maxSpeed: 5
+  maxForce: 2
+  maxSpeed: 6
 --- !u!1 &880282771
 GameObject:
   m_ObjectHideFlags: 0
@@ -693,7 +698,7 @@ GameObject:
   - component: {fileID: 1491568738}
   m_Layer: 0
   m_Name: Target
-  m_TagString: Untagged
+  m_TagString: Target
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -927,6 +932,59 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
+--- !u!1 &2015289806
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2015289807}
+  - component: {fileID: 2015289808}
+  m_Layer: 0
+  m_Name: Sphere
+  m_TagString: POV
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2015289807
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2015289806}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 6, y: 6, z: 6}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2118339301}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &2015289808
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2015289806}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2118339300
 GameObject:
   m_ObjectHideFlags: 0
@@ -964,6 +1022,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1491568737}
+  - {fileID: 2015289807}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &2118339302
@@ -1097,7 +1156,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -1182,5 +1241,5 @@ SceneRoots:
   - {fileID: 880282775}
   - {fileID: 2118339301}
   - {fileID: 1380169199}
-  - {fileID: 810381590}
   - {fileID: 162336875}
+  - {fileID: 810381590}

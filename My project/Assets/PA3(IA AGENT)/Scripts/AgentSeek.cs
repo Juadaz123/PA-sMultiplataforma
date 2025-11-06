@@ -35,12 +35,7 @@ public class AgentSeek : MonoBehaviour,  IAgent
         Position = transform.position;
         Velocity += StearingBehaviors.Seek(this, thistarget).normalized;
         transform.position += Velocity * Time.deltaTime;
-
-        if (transform.position == thistarget.transform.position)
-        {
-            Velocity = Vector3.zero;
-            //prueba
-        }
+        
         
     }
 

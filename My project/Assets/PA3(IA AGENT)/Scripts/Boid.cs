@@ -14,6 +14,11 @@ public class Boid : MonoBehaviour, IAgent
     private float _cohesionWeight;
     private float _separationWeight;
     private float _alignmentWeight;
+    
+    private bool _enableSphereContainment;
+    private float _sphereRadius;
+    private float _containmentWeight;
+    private Vector3 _sphereCenter;
 
     private void Start()
     {
@@ -30,26 +35,65 @@ public class Boid : MonoBehaviour, IAgent
         _cohesionWeight = _manager.cohesionWeight;
         _separationWeight = _manager.separationWeight;
         _alignmentWeight = _manager.alignmentWeight;
+        
+        _enableSphereContainment = _manager.enableSphereContainment;
+        _sphereRadius = _manager.sphereRadius;
+        _containmentWeight = _manager.containmentWeight;
+        _sphereCenter = _manager.transform.position;
+        
+        
     }
 
     private void Update()
     {
-        Vector3 cohesionPos = StearingBehaviors.Cohesion(this, _manager.Boids, _manager.cohesionRadius) * _cohesionWeight;
+        BehaviourFlock();
+    }
+
+    public void GetMoreCohesion(bool nearPLayer)
+    {
+        if (nearPLayer)
+        {
+             IAgent target = GameObject.Find("Player").GetComponent<TargetAgent>(); 
+
+            _cohesionWeight += 10f;
+            MaxSpeed = 1f;
+            Position = transform.position;
+            Velocity += StearingBehaviors.Seek(this, target).normalized;
+            transform.position += Velocity * Time.deltaTime;
+        }
+        else if (!nearPLayer)
+        {
+            BehaviourFlock();
+
+        }
+    }
+
+    private void BehaviourFlock()
+    {Vector3 cohesion = StearingBehaviors.Cohesion(this, _manager.Boids, _manager.cohesionRadius) * _cohesionWeight;
         Vector3 separation = StearingBehaviors.Separation(this, _manager.Boids, _manager.separationRadius) * _separationWeight;
         Vector3 alignment = StearingBehaviors.Alignment(this, _manager.Boids, _manager.alignmentRadius) * _alignmentWeight; 
-        if (_manager.enableWrapping)
+        Vector3 containment = Vector3.zero;
+        if (_enableSphereContainment)
         {
-            Vector3 wrappedPos = _manager.GetWrapedPos(Position);
-            if (wrappedPos != Position)
-            {
-                Position = wrappedPos;
-            }
-            
-            Velocity += (cohesionPos + separation + alignment) * Time.deltaTime;
-            Position += Velocity * Time.deltaTime;
-            transform.up = Velocity.normalized;
-            transform.position = Position;
+            containment = StearingBehaviors.InsideSphere(this, _sphereCenter, _sphereRadius) * _containmentWeight;
         }
+
+        Vector3 totalSteeringForce = cohesion + separation + alignment + containment;
+        
+        totalSteeringForce = Vector3.ClampMagnitude(totalSteeringForce, MaxForce);
+        
+        Velocity += totalSteeringForce * Time.deltaTime;
+        
+        Velocity = Vector3.ClampMagnitude(Velocity, MaxSpeed);
+        
+        Position += Velocity * Time.deltaTime;
+        
+        if (Velocity.sqrMagnitude > Mathf.Epsilon) 
+        {
+            transform.up = Velocity.normalized; 
+        }
+        transform.position = Position;
+
         
     }
 }

@@ -24,21 +24,21 @@ public class ScoreManager : MonoBehaviour
         return _actualScore;
     }
 
-    private void SubmitScore()
+    public void SubmitScore()
     {
         UpdateScore();
     }
 
-    public void AddScore(int score)
-    {
-        if(score < 0)
-        { 
-            score = 0;
+        public void AddScore(int score)
+        {
+            if(score < 0)
+            { 
+                score = 0;
+            }
+            
+            _actualScore += score;
+            UpdateScore();
         }
-        
-        _actualScore += score;
-        UpdateScore();
-    }
     public void SubtractScore(int score)
     {
         if(score < 0)

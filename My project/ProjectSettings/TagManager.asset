@@ -8,6 +8,9 @@ TagManager:
   - Score
   - Redill
   - Sheep
+  - Enemy
+  - POV
+  - Targeted
   layers:
   - Default
   - TransparentFX
