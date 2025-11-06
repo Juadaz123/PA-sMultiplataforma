@@ -6,7 +6,8 @@ TagManager:
   tags:
   - Target
   - Score
-  - Wall
+  - Redill
+  - Sheep
   layers:
   - Default
   - TransparentFX
