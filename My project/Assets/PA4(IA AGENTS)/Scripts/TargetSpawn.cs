@@ -28,7 +28,7 @@ public class TargetSpawner : MonoBehaviour {
                     randomNode = gridReference.grid[randomX, randomY];
                     
                     attempts++;
-                    if (attempts > 100) break; 
+                   // if (attempts > 100) break; 
 
                 } while (!randomNode.walkable);
 
