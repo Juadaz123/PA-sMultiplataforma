@@ -31,6 +31,9 @@ namespace IA.Stearing_Behaviours
             return steering;
         }
         
+        //Wander
+        
+//Flock
         public static  Vector3 Cohesion(IAgent boid, IAgent[] neighbours, float radius)
         {
             Vector3 center = Vector3.zero;
